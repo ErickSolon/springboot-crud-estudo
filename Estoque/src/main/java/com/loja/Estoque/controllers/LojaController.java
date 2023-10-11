@@ -21,6 +21,13 @@ public class LojaController {
         return ResponseEntity.ok(produtos);
     }
 
+    @GetMapping("/titulo/{titulo}")
+    public ResponseEntity getProdutos(@PageableDefault(page = 0, size = 5) Pageable pageable, @PathVariable String titulo) {
+        var produtos = lojaService.findAllProdutosPorTitulo(pageable, titulo);
+
+        return ResponseEntity.ok(produtos);
+    }
+
     @PostMapping
     public ResponseEntity saveProduto(@RequestBody Produtos produtos) {
         lojaService.addProdutoNoEstoque(produtos);

@@ -5,8 +5,12 @@ import com.loja.Estoque.models.dtos.EstoqueDTO;
 import com.loja.Estoque.repositories.LojaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +24,19 @@ public class LojaService {
         );
 
         return produtosDTO;
+    }
+
+    public Page<EstoqueDTO> findAllProdutosPorTitulo(Pageable pageable, String titulo) {
+        var produtos = lojaRepository.findAllProdutos(pageable);
+
+        List<EstoqueDTO> produtosDTO = produtos.stream()
+                .map(produto ->
+                        new EstoqueDTO(produto.getPrecos().getPid(), produto.getPrecos().getValor(), produto.getId(), produto.getTitulo(), produto.getQtd())
+                )
+                .filter(x -> x.titulo().equalsIgnoreCase(titulo))
+                .collect(Collectors.toList());
+
+        return new PageImpl<>(produtosDTO, pageable, produtos.getSize());
     }
 
     public Produtos addProdutoNoEstoque(Produtos produtos) {
