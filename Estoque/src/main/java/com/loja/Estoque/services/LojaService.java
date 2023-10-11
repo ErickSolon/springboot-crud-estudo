@@ -26,19 +26,21 @@ public class LojaService {
         return lojaRepository.save(produtos);
     }
 
-    public Produtos produtoById(Long id) {
+    public EstoqueDTO produtoById(Long id) {
         var produto = lojaRepository.findByIdProdutos(id);
+        EstoqueDTO estoqueDTO = new EstoqueDTO(produto.precos.pid, produto.precos.valor, produto.id, produto.titulo, produto.qtd);
 
-        return produto;
+        return estoqueDTO;
     }
 
     public void deleteByProdutoById(Long id) {
-        var produto = produtoById(id);
+        var produto = lojaRepository.findByIdProdutos(id);;
+
         lojaRepository.delete(produto);
     }
 
     public Produtos updateByid(Long id, Produtos produtos) {
-        var produto = produtoById(id);
+        var produto = lojaRepository.findByIdProdutos(id);;
         produto.id = id;
         produto.titulo = produtos.titulo;
         produto.qtd = produtos.qtd;
